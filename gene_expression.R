@@ -3,7 +3,7 @@ library(dplyr)
 library(tidyverse)
 library(GEOquery)
 library(conflicted)
-
+library(ggplot2)
 # read in dataset
 data <- read_csv("GSE183947_fpkm.csv")
 
@@ -55,7 +55,45 @@ data.long%>%
   # Arrange the results in ascending order of mean FPKM
   arrange(mean_FPKM)
   
-  
-  
-  
-  
+#visualize data
+  #bar chart
+  # Filter the dataset to include only rows where the gene is "BRCA1"
+a <- data.long%>%# 
+  filter(gene == "BRCA1")%>%
+  # Pass the filtered data to ggplot for visualization
+  ggplot(.,aes(x = samples, y = FPKM, fill = tissue)) + 
+  # Create a bar plot (geom_col() is used to create bar charts)
+    geom_col()
+ggsave(a, filename = "barchart.pdf", width = 10, height = 8)
+  #Density
+b <- data.long%>%
+  filter(gene == "BRCA1")%>%# Filter for rows where the gene is BRCA1
+  ggplot(.,aes(x = FPKM, fill = tissue)) + # Map FPKM to x-axis and tissue to fill color
+  geom_density(alpha = 0.5)# Create overlapping density curves with transparency (alpha)
+ggsave(b, filename = "density.pdf", width = 10, height = 8)
+
+  #boxplot
+c <- data.long%>%
+  filter(gene == "BRCA1")%>%# Filter for rows where the gene is BRCA1
+  ggplot(.,aes(x = metastasis, y =FPKM)) +# Map metastasis status to x-axis and FPKM to y-axis
+  geom_boxplot()# Create a box plot
+ggsave(c, filename = "boxplot.pdf", width = 10, height = 8)
+
+  #scatterplot
+d <- data.long%>%
+  filter(gene == "BRCA1" | gene == "BRCA2")%>%# Filter for BRCA1 and BRCA2 genes
+  spread(key = gene, value = FPKM)%>%# Reshape data to have separate columns for BRCA1 and BRCA2 expression
+  ggplot(.,aes(x = BRCA1, y = BRCA2, colour = tissue)) +# Map BRCA1 to x-axis, BRCA2 to y-axis, and tissue to color
+  geom_point() +# Add points to represent samples
+  geom_smooth(method = "lm", se = FALSE)# Add a linear regression line without confidence interval (se = FALSE)
+ggsave(d, filename = "scatterplot.pdf", width = 10, height = 8)
+
+
+  #heatmap
+genes.of.interest <- c("BRCA1", "BRCA2", "TP53", "ALK", "MYCN")# List of genes to analyze
+e <- data.long%>%
+  filter(gene %in% genes.of.interest)%>%# Filter for rows where the gene is in the list of interest
+  ggplot(.,aes(x = samples, y = gene, fill = FPKM)) +# Map samples to x-axis, genes to y-axis, and FPKM to tile color
+  geom_tile() +# Create heatmap tiles
+  scale_fill_gradient(low = "white", high = "blue")# Set color gradient from white (low expression) to blue (high expression)
+ggsave(e, filename = "heatmap.pdf", width = 10, height = 8)  
