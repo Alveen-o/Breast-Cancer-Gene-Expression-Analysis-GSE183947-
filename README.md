@@ -14,7 +14,7 @@ This project involves the analysis of RNA-seq data from the **GSE183947** datase
 ## **Project Workflow**
 ### 1. **Data Preprocessing**
 - **Input Files**:
-  - Gene expression data: `GSE183947_fpkm.csv`
+  - Gene expression data: [`GSE183947_fpkm.csv`](GSE183947_fpkm.csv)
   - Metadata retrieved using `GEOquery` in R.
 - **Steps**:
   - Data reshaped from wide to long format for easier analysis using `tidyverse`.
@@ -55,7 +55,7 @@ Generated multiple plots using `ggplot2` to explore and visualize the data:
 - [R Script for Analysis](gene_expression.R): Contains all the R code used for data preprocessing, analysis, and visualization.
 
 ### **Data**
-- `GSE183947_fpkm.csv`: Gene expression dataset.
+- [`GSE183947_fpkm.csv`](GSE183947_fpkm.csv): Gene expression dataset.
 
 ### **Plots**
 - [Bar Chart](barchart.pdf)
